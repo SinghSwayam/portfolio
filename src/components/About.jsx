@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,6 +12,8 @@ import { GridBeamBackground } from "./design/SectionBackgrounds";
 import useTheme from "../hooks/useTheme";
 import githubIconLight from "../assets/icon-park--github.svg";
 
+import { supabase } from "../config/supabaseClient";
+
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 const About = () => {
@@ -20,6 +22,17 @@ const About = () => {
   const scrollTriggerRef = useRef(null);
   const staticTitleRef = useRef();
   const theme = useTheme();
+
+  const [resumeUrl, setResumeUrl] = useState("");
+
+  useEffect(() => {
+    const { data } = supabase
+      .storage
+      .from('portfolio-assets')
+      .getPublicUrl('resume/resume.pdf');
+
+    if (data) setResumeUrl(data.publicUrl);
+  }, []);
 
   useGSAP(() => {
     let mm = gsap.matchMedia();
@@ -146,7 +159,13 @@ const About = () => {
           interactive 3D experiences, always staying at the forefront of
           modern web standards and creative technology.
           <br /><br />
-          <a href="/resume.pdf" download="SwayamResume.pdf" className="inline-block bg-[#915EFF] py-3 px-8 rounded-xl text-white font-bold shadow-md hover:bg-[#804dee] transition-all">
+
+          <a
+            href={resumeUrl || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-[#915EFF] py-3 px-8 rounded-xl text-white font-bold shadow-md hover:bg-[#804dee] transition-all"
+          >
             Download Resume
           </a>
         </div>
@@ -241,7 +260,14 @@ const About = () => {
               mastering core data structures to architecting complex <strong>3D environments</strong> using
               Three.js, I've always aimed to push the boundaries of what is possible on a browser.
             </p>
-            <a href="/resume.pdf" download className="bg-[#915EFF] py-3 px-8 rounded-xl w-fit text-white font-bold shadow-md hover:bg-[#804dee] transition-all">Download Resume</a>
+            <a
+              href={resumeUrl || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#915EFF] py-3 px-8 rounded-xl w-fit text-white font-bold shadow-md hover:bg-[#804dee] transition-all"
+            >
+              Download Resume
+            </a>
           </div>
 
           {services.map((service, index) => {

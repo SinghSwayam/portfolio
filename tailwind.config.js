@@ -1,7 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{js,jsx}"],
-  darkMode: ['class', '[data-theme="dark"]'], // Optional explicit support
+  darkMode: ['class', '[data-theme="dark"]'],
+
+  safelist: [
+    {
+      pattern: /^text-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-[0-9]{1,4}$/,
+    },
+    "text-white",
+    "text-black",
+  ],
+
   theme: {
     extend: {
       colors: {

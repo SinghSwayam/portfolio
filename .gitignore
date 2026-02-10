@@ -25,3 +25,6 @@ dist-ssr
 
 # Enviornment files
 .env
+
+#docs
+docs

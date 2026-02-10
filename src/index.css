@@ -353,3 +353,9 @@ body {
 .animate-pulse-glow {
   animation: pulse-glow 8s infinite ease-in-out;
 }
+
+.react-player video {
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
+}

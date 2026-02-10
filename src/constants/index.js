@@ -1,10 +1,5 @@
 import opensource from "../assets/github.svg";
 import webdev from "../assets/webdev.png";
-import circuitComposerImg from "../assets/project_images/circuit-composer-dark.png";
-import razorpayCloneImg from "../assets/project_images/razorpay-clone.png";
-import studynotionImg from "../assets/project_images/studynotion.png";
-import ecomzyImg from "../assets/project_images/ecomzy.png";
-import arvrImg from "../assets/project_images/arvrclub.png";
 import cplusplus from "../assets/skill_icons/devicon--cplusplus.svg";
 import csharp from "../assets/skill_icons/devicon--csharp.svg";
 import git from "../assets/skill_icons/devicon--git.svg";
@@ -106,66 +101,3 @@ export const skillsData = [
   },
 ];
 
-export const projects = [
-  {
-    name: "AR/VR Club Portal",
-    description: "A dynamic web portal for a AR/VR club GHRCEM.",
-    tags: [
-      { name: "next", color: "text-white" },
-      { name: "typescript", color: "text-blue-600" },
-      { name: "tailwind", color: "text-cyan-400" },
-      { name: "supabase", color: "text-emerald-500" },
-    ],
-    image: arvrImg,
-    source_code_link: "https://github.com/SinghSwayam/AR-VR-Club-Website/",
-    live_link: "https://ar-vr-club-website.vercel.app",
-  },
-  {
-    name: "Circuit Composer",
-    description: "Quantum Computing circuit composer.",
-    tags: [
-      { name: "typescript", color: "text-blue-600" },
-      { name: "tailwind", color: "text-cyan-400" },
-    ],
-    image: circuitComposerImg,
-    source_code_link: "https://github.com/SinghSwayam/Circuit-Composer/",
-    live_link: "https://circuit-composer.vercel.app",
-  },
-  {
-    name: "StudyNotion",
-    description: "StudyNotion an ed-tech platform with payment integration.",
-    tags: [
-      { name: "react", color: "text-sky-400" },
-      { name: "javascript", color: "text-yellow-400" },
-      { name: "express", color: "text-gray-400" },
-      { name: "mongodb", color: "text-green-600" },
-      { name: "tailwind", color: "text-cyan-400" },
-    ],
-    image: studynotionImg,
-    source_code_link: "https://github.com/SinghSwayam/StudyNotion",
-    live_link: "https://study-notion-drab-phi.vercel.app/",
-  },
-  {
-    name: "ECOMZY",
-    description: "E-commerce platform.",
-    tags: [
-      { name: "react", color: "text-sky-400" },
-      { name: "javascript", color: "text-yellow-400" },
-      { name: "tailwind", color: "text-cyan-400" },
-    ],
-    image: ecomzyImg,
-    source_code_link: "https://github.com/SinghSwayam/ShoppingCart",
-    live_link: "https://ecomzy-ecru.vercel.app/",
-  },
-  {
-    name: "RazorPay Clone",
-    description: "Static page of Razorpay cloned.",
-    tags: [
-      { name: "html", color: "text-orange-400" },
-      { name: "tailwind", color: "text-cyan-400" },
-    ],
-    image: razorpayCloneImg,
-    source_code_link: "https://github.com/SinghSwayam/Razorpay_2_0_Tailwind/",
-    live_link: "https://razorpay-2-0-tailwind.vercel.app/",
-  },
-];

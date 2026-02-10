@@ -2,14 +2,15 @@ import React, { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ReactPlayer from "react-player";
 import { styles } from "../styles";
-import { projects } from "../constants";
 import { SpotlightBackground } from "./design/SectionBackgrounds";
 import useTheme from "../hooks/useTheme";
+import { supabase } from "../config/supabaseClient";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const ProjectRow = ({ project, index, setActiveImage, setIsHovering }) => {
+const ProjectRow = ({ project, index, setActiveMedia, setIsHovering }) => {
   const rowRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isInside, setIsInside] = useState(false);
@@ -24,12 +25,16 @@ const ProjectRow = ({ project, index, setActiveImage, setIsHovering }) => {
     });
   };
 
+
   return (
     <div
       ref={rowRef}
       className="project-row group relative border-b border-white/10 py-12 lg:py-16 px-4 flex flex-col lg:flex-row items-start lg:items-center justify-between transition-colors overflow-hidden"
       onMouseEnter={() => {
-        setActiveImage(project.image);
+        setActiveMedia({
+          url: project.video || project.image,
+          type: project.video ? "video" : "image"
+        });
         setIsHovering(true);
         setIsInside(true);
       }}
@@ -58,47 +63,82 @@ const ProjectRow = ({ project, index, setActiveImage, setIsHovering }) => {
             {project.name}
           </h3>
 
-          <div className="lg:hidden w-full h-52 sm:h-64 rounded-lg overflow-hidden my-4 border border-white/10 relative">
-            <img src={project.image} alt={project.name} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-[#915EFF]/10"></div>
+          <div className="lg:hidden w-full h-52 sm:h-64 rounded-lg overflow-hidden my-4 border border-white/10 relative bg-black">
+            {project.video ? (
+              <div className="w-full h-full">
+                <ReactPlayer
+                  key={project.video}
+                  url={project.video}
+                  width="100%"
+                  height="100%"
+                  controls={true}
+                  light={project.image}
+                  playIcon={
+                    <div className="p-3 bg-black/50 rounded-full cursor-pointer hover:bg-[#915EFF] transition-all border border-white/20 backdrop-blur-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+                      </svg>
+                    </div>
+                  }
+                />
+              </div>
+            ) : (
+              <>
+                <img src={project.image} alt={project.name} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-[#915EFF]/10"></div>
+              </>
+            )}
           </div>
 
           <p className="text-secondary text-[14px] lg:text-[16px] max-w-lg leading-relaxed mb-2 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-500">
             {project.description}
           </p>
+
           <div className="flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
-              <span key={tag.name} className={`text-[10px] lg:text-xs px-2 py-1 rounded border border-white/10 ${tag.color} ${theme === "light" ? "invert" : ""}`}>
-                #{tag.name}
-              </span>
-            ))}
+            {project.tags?.map((tag, i) => {
+              const isObject = typeof tag === 'object' && tag !== null;
+              const tagName = isObject ? tag.name : tag;
+              const tagColor = isObject && tag.color ? tag.color : "text-secondary";
+
+              return (
+                <span key={i} className={`text-[10px] lg:text-xs px-2 py-1 rounded border border-white/10 ${tagColor} ${theme === "light" ? "invert" : ""}`}>
+                  {tagName}
+                </span>
+              )
+            })}
           </div>
         </div>
       </div>
 
       <div className="relative z-20 flex items-center gap-4 mt-6 lg:mt-0 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 lg:translate-x-4 lg:group-hover:translate-x-0 transition-all duration-300">
+
         {project.live_link && (
           <button
             onClick={(e) => { e.stopPropagation(); window.open(project.live_link, "_blank"); }}
             className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full border border-secondary/20 bg-tertiary backdrop-blur-md flex items-center justify-center hover:bg-[#915EFF] hover:border-[#915EFF] transition-all group/btn shadow-lg ${theme === "light" ? "border-[#915EFF]" : ""}`}
+            title="View Live Site"
           >
             <svg className="w-5 h-5 lg:w-6 lg:h-6 text-text-primary group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
           </button>
         )}
-        <button
-          onClick={(e) => { e.stopPropagation(); window.open(project.source_code_link, "_blank"); }}
-          className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full border border-secondary/20 bg-tertiary backdrop-blur-md flex items-center justify-center hover:bg-[#915EFF] hover:border-[#915EFF] transition-all group/btn shadow-lg ${theme === "light" ? "border-[#915EFF]" : ""}`}
-        >
-          <img
-            src={theme === "light" ? "https://cdn-icons-png.flaticon.com/512/25/25231.png" : "https://cdn-icons-png.flaticon.com/512/25/25231.png"}
-            alt="github"
-            className={`w-5 h-5 lg:w-6 lg:h-6 ${theme === "light" ? "" : "invert"} group-hover/btn:invert-0 group-hover/btn:brightness-0 transition-all`}
-          />
-        </button>
+
+        {project.source_code_link && (
+          <button
+            onClick={(e) => { e.stopPropagation(); window.open(project.source_code_link, "_blank"); }}
+            className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full border border-secondary/20 bg-tertiary backdrop-blur-md flex items-center justify-center hover:bg-[#915EFF] hover:border-[#915EFF] transition-all group/btn shadow-lg ${theme === "light" ? "border-[#915EFF]" : ""}`}
+            title="View Source Code"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+              alt="github"
+              className={`w-5 h-5 lg:w-6 lg:h-6 ${theme === "light" ? "" : "invert"} group-hover/btn:invert-0 group-hover/btn:brightness-0 transition-all`}
+            />
+          </button>
+        )}
       </div>
-    </div>
+    </div >
   );
 };
 
@@ -110,10 +150,43 @@ const Works = () => {
   const rightColumnRef = useRef(null);
   const theme = useTheme();
 
-  const [activeImage, setActiveImage] = useState(projects[0].image);
+  // DYNAMIC STATE
+  const [projects, setProjects] = useState([]);
+  const [activeMedia, setActiveMedia] = useState({ url: "", type: "image" });
   const [isHovering, setIsHovering] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*')
+          .order('order', { ascending: true });
+
+        if (error) throw error;
+
+        setProjects(data);
+
+        if (data.length > 0) {
+          setActiveMedia({
+            url: data[0].video || data[0].image,
+            type: data[0].video ? "video" : "image"
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   useGSAP(() => {
+    if (loading) return;
+
     let mm = gsap.matchMedia();
 
     mm.add("(min-width: 1024px)", () => {
@@ -147,64 +220,88 @@ const Works = () => {
         invalidateOnRefresh: true,
       });
 
-      return () => window.removeEventListener("mousemove", handleMouseMove);
+      return () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+        ScrollTrigger.getAll().forEach(t => t.kill());
+      };
     });
 
-  }, { scope: containerRef });
+  }, { scope: containerRef, dependencies: [loading, projects] }); // Re-run when loading finishes
 
   useEffect(() => {
-    gsap.to(cursorImageRef.current, {
-      scale: isHovering ? 1 : 0,
-      opacity: isHovering ? 1 : 0,
-      duration: 0.35,
-      ease: "back.out(1.2)",
-    });
+    if (cursorImageRef.current) {
+      gsap.to(cursorImageRef.current, {
+        scale: isHovering ? 1 : 0,
+        opacity: isHovering ? 1 : 0,
+        duration: 0.35,
+        ease: "back.out(1.2)",
+      });
+    }
   }, [isHovering]);
 
   return (
-    <section ref={containerRef} id="work" className="relative bg-primary min-h-screen py-16 lg:py-24 overflow-x-hidden">
+    <section ref={containerRef} id="work" className="relative bg-primary min-h-screen py-16 lg:py-24 overflow-clip">
 
       <SpotlightBackground />
 
       <div
         ref={cursorImageRef}
-        className="fixed top-0 left-0 hidden lg:flex items-center justify-center w-[550px] max-h-[400px] rounded-xl overflow-hidden pointer-events-none z-[100] border border-white/10 shadow-2xl"
+        className="fixed top-0 left-0 hidden lg:flex items-center justify-center w-[550px] max-h-[400px] rounded-xl overflow-hidden pointer-events-none z-[100] border border-white/10 shadow-2xl bg-black"
         style={{ willChange: "transform, opacity" }}
       >
-        <img
-          src={activeImage}
-          alt="preview"
-          className="w-full h-full object-contain bg-black/40"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        {activeMedia.type === "video" ? (
+          <div className="w-full aspect-video relative">
+            <video
+              src={activeMedia.url}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+          </div>
+        ) : (
+          <>
+            <img
+              src={activeMedia.url}
+              alt="preview"
+              className="w-full h-full object-contain bg-black/40"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          </>
+        )}
       </div>
 
       <div className={`${styles.paddingX} max-w-7xl mx-auto flex flex-col lg:flex-row gap-10 lg:gap-20 relative z-10`}>
-        {/* Left Column */}
         <div className="w-full lg:w-1/3">
           <div ref={leftColumnRef}>
             <p className={styles.sectionSubText}>My work</p>
             <h2 className={styles.sectionHeadText}>Projects.</h2>
             <p className="text-secondary text-[16px] lg:text-[17px] leading-[30px] mt-4">
               A selection of my recent works.
-              <span className="hidden lg:inline"> Hover to see snapshots and dive into the tech details.</span>
-              <span className="lg:hidden"> Scroll to explore projects.</span>
+              <span className="hidden lg:inline"> Hover to see live video previews and tech details.</span>
+              <span className="lg:hidden"> Tap play to watch project demos.</span>
             </p>
             <div className="w-20 h-1 bg-[#915EFF] mt-6 shadow-[0_0_20px_#915EFF]" />
           </div>
         </div>
 
-        {/* Right Column */}
         <div ref={rightColumnRef} className="w-full lg:w-2/3 project-list border-t border-white/10">
-          {projects.map((project, index) => (
-            <ProjectRow
-              key={index}
-              project={project}
-              index={index}
-              setActiveImage={setActiveImage}
-              setIsHovering={setIsHovering}
-            />
-          ))}
+
+          {loading ? (
+            <div className="py-20 text-center text-secondary animate-pulse">Loading Archives...</div>
+          ) : (
+            projects.map((project, index) => (
+              <ProjectRow
+                key={project.id}
+                project={project}
+                index={index}
+                setActiveMedia={setActiveMedia}
+                setIsHovering={setIsHovering}
+              />
+            ))
+          )}
 
           <div className="mt-20">
             <a href="https://github.com/SinghSwayam?tab=repositories" target="_blank" rel="noreferrer">

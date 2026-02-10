@@ -67,14 +67,7 @@ const About = () => {
           start: "top top",
           end: "+=" + (indicators.length * 100) + "%",
           pin: true,
-          scrub: 0.5,
-          snap: {
-            snapTo: 1 / (indicators.length - 1),
-            duration: { min: 0.1, max: 0.3 },
-            delay: 0,
-            ease: "power1.inOut",
-            inertia: false
-          },
+          scrub: 1,
           onUpdate: (self) => {
             gsap.set(fill, { scaleY: self.progress });
           }
@@ -130,8 +123,8 @@ const About = () => {
     const st = scrollTriggerRef.current;
     if (!st) return;
     const totalScroll = st.end - st.start;
-    const targetScroll = st.start + (totalScroll * (index / (6 - 1)));
-    gsap.to(window, { scrollTo: targetScroll, duration: 1, ease: "power3.inOut" });
+    const targetScroll = st.start + (totalScroll * (index / (6 - 1))) + 5;
+    gsap.to(window, { scrollTo: targetScroll, duration: 1.5, ease: "power2.out" });
   };
 
   return (
@@ -139,6 +132,7 @@ const About = () => {
 
       <GridBeamBackground />
 
+      {/* MOBILE VIEW */}
       <div className="lg:hidden max-w-7xl mx-auto px-6 sm:px-16 flex flex-col gap-10 relative z-10">
         <div>
           <p className={styles.sectionSubText}>Introduction</p>
@@ -212,6 +206,7 @@ const About = () => {
       </div>
 
 
+      {/* DESKTOP VIEW */}
       <div className="hidden lg:flex max-w-7xl mx-auto w-full px-6 sm:px-16 gap-20 h-full relative z-10">
         <div className="w-2/3 flex flex-col justify-center relative z-20 h-full">
           <div className="mb-10">

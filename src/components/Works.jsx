@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import ReactPlayer from "react-player";
 import { styles } from "../styles";
 import { SpotlightBackground } from "./design/SectionBackgrounds";
 import useTheme from "../hooks/useTheme";
@@ -14,6 +13,7 @@ const ProjectRow = ({ project, index, setActiveMedia, setIsHovering }) => {
   const rowRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isInside, setIsInside] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const theme = useTheme();
 
   const handleMouseMove = (e) => {
@@ -65,23 +65,34 @@ const ProjectRow = ({ project, index, setActiveMedia, setIsHovering }) => {
 
           <div className="lg:hidden w-full h-52 sm:h-64 rounded-lg overflow-hidden my-4 border border-white/10 relative bg-black">
             {project.video ? (
-              <div className="w-full h-full">
-                <ReactPlayer
-                  key={project.video}
-                  url={project.video}
-                  width="100%"
-                  height="100%"
-                  controls={true}
-                  light={project.image}
-                  playIcon={
-                    <div className="p-3 bg-black/50 rounded-full cursor-pointer hover:bg-[#915EFF] transition-all border border-white/20 backdrop-blur-sm">
+              isVideoPlaying ? (
+                <video
+                  src={project.video}
+                  className="w-full h-full object-cover"
+                  controls
+                  autoPlay
+                  playsInline
+                  loop
+                />
+              ) : (
+                <div
+                  className="relative w-full h-full cursor-pointer group"
+                  onClick={() => setIsVideoPlaying(true)}
+                >
+                  <img
+                    src={project.image}
+                    alt={project.name}
+                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="p-3 bg-black/50 rounded-full group-hover:bg-[#915EFF] transition-all border border-white/20 backdrop-blur-sm group-hover:scale-110">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
                       </svg>
                     </div>
-                  }
-                />
-              </div>
+                  </div>
+                </div>
+              )
             ) : (
               <>
                 <img src={project.image} alt={project.name} className="w-full h-full object-cover" />

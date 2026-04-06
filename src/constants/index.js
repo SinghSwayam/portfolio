@@ -19,9 +19,6 @@ import typescript from "../assets/skill_icons/typescript.svg";
 import unity from "../assets/skill_icons/devicon--unity.svg";
 import nodejs from "../assets/skill_icons/logos--nodejs-icon.svg";
 import gsapIcon from "../assets/skill_icons/simple-icons--gsap.svg";
-import oopIcon from "../assets/skill_icons/OOP.png";
-import dsaIcon from "../assets/skill_icons/DSA.png";
-import osIcon from "../assets/skill_icons/OS.png";
 
 export const navLinks = [
   { id: "about", title: "About" },
@@ -74,7 +71,7 @@ export const skillsData = [
     ],
   },
   {
-    category: "Databases & Data",
+    category: "Database",
     skills: [
       { name: "MySQL", icon: mysql },
       { name: "MongoDB", icon: mongodb },
@@ -90,14 +87,6 @@ export const skillsData = [
       { name: "Github", icon: github },
       { name: "Postman", icon: postman },
     ],
-  },
-  {
-    category: "Computer Science Concepts",
-    skills: [
-      { name: "DSA", icon: dsaIcon },
-      { name: "OOP", icon: oopIcon },
-      { name: "OS", icon: osIcon },
-    ],
-  },
+  }
 ];
 

@@ -4,24 +4,24 @@ const styles = {
   padding: "sm:px-16 px-6 sm:py-16 py-10",
 
   heroHeadText:
-    "font-black text-text-primary lg:text-[80px] sm:text-[60px] xs:text-[50px] text-[40px] lg:leading-[98px] mt-2",
+    "font-black font-space text-nb-text lg:text-[100px] sm:text-[80px] xs:text-[60px] text-[50px] lg:leading-[105px] tracking-tighter uppercase",
 
   heroSubText:
-    "text-secondary font-medium lg:text-[30px] sm:text-[26px] xs:text-[20px] text-[16px] lg:leading-[40px]",
+    "font-mono text-nb-muted font-bold lg:text-[24px] sm:text-[20px] xs:text-[16px] text-[14px] lg:leading-[40px] uppercase",
 
   sectionHeadText:
-    "text-text-primary font-black md:text-[60px] sm:text-[50px] xs:text-[40px] text-[30px]",
+    "font-space text-nb-text font-black md:text-[70px] sm:text-[60px] xs:text-[50px] text-[40px] tracking-tighter uppercase leading-none",
 
   sectionSubText:
-    "sm:text-[18px] text-[14px] text-secondary uppercase tracking-wider",
+    "font-mono sm:text-[14px] text-[12px] text-nb-accent uppercase tracking-widest font-bold",
 
   flexCenter: "flex justify-center items-center",
   flexStart: "flex justify-start items-start",
   flexBetween: "flex justify-between items-center",
 
-  input: "bg-transparent border-b py-4 px-2 placeholder:text-secondary text-text-primary outline-none font-medium transition-all duration-300 w-full",
+  input: "bg-nb-surface-2 border-2 border-nb-border py-4 px-4 placeholder:text-nb-muted text-nb-text font-space outline-none font-bold transition-none focus:border-nb-accent shadow-[4px_4px_0px_#fff] focus:shadow-[4px_4px_0px_var(--nb-accent)] w-full",
 
-  button: "bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-text-primary font-bold shadow-md shadow-primary",
+  button: "nb-button",
 };
 
 export { styles };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -8,15 +8,12 @@ import Works from './components/Works';
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import GitHubActivity from "./components/GitHubActivity";
-import ThemeToggle from "./components/design/ThemeToggle";
 
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const StarsCanvas = React.lazy(() => import("./canvas/Stars"));
 
 const App = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -34,9 +31,10 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    // Adjusted Lenis settings for a more snappy scroll (neubrutalism feel)
     const lenis = new Lenis({
-      duration: 1.5,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 0.8,
+      easing: (t) => 1 - Math.pow(1 - t, 4), // Quicker out ease, less floaty
       direction: 'vertical',
       gestureDirection: 'vertical',
       smooth: true,
@@ -62,31 +60,23 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <div className="relative z-0 bg-primary overflow-x-hidden duration-0">
-
-        <ThemeToggle />
-
-        <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center">
+      <div className="relative z-0 bg-nb-bg bg-dot-pattern overflow-x-hidden duration-0 min-h-screen">
+        <div className="relative z-[120]">
           <Navbar />
-          <Hero />
         </div>
+
+        <Hero />
 
         <About />
         <Tech />
         <Works />
 
-        <div className="hidden lg:block">
+        <div className="hidden lg:block border-t-[3px] border-nb-border-muted relative z-10 bg-nb-bg bg-dot-interactive">
           <GitHubActivity />
         </div>
 
-        <div className="relative z-0">
+        <div className="relative z-20 border-t-[3px] border-nb-border-muted bg-nb-accent">
           <Contact />
-
-          {!isMobile && (
-            <Suspense fallback={null}>
-              <StarsCanvas />
-            </Suspense>
-          )}
         </div>
 
         <Footer />

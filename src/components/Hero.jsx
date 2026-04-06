@@ -1,276 +1,380 @@
-import React, { useRef, useState, useEffect, Suspense } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { styles } from "../styles";
 
-// Lazy load 3D component
-const ComputersCanvas = React.lazy(() => import("../canvas/Computers"));
-import useTheme from "../hooks/useTheme";
+const ABOUT_CODE_BLOCK = `const developer = {
+  name: "Swayam Singh",
+  role: "Full Stack Developer",
+  focus: ["React", "Node.js", "Three.js"],
+  languages: ["C++", "Java", "Javascript","Python", "Typescript"],
+  superpower: "Turning complex ideas into fast, elegant interfaces",
+  currently: "Opensource and Leetcode grind",
+  status: "Open to impactful work",
+  interests: ["Mechanical keyboards", "Creative coding", "Design systems"]
+};`;
+
+const KEYWORDS = new Set(["const", "let", "var", "return", "true", "false", "null"]);
+
+const tokenizeCode = (source) => {
+  const tokens = [];
+  let i = 0;
+
+  while (i < source.length) {
+    const ch = source[i];
+
+    if (/\s/.test(ch)) {
+      let j = i + 1;
+      while (j < source.length && /\s/.test(source[j])) {
+        j += 1;
+      }
+      tokens.push({ type: "ws", value: source.slice(i, j) });
+      i = j;
+      continue;
+    }
+
+    if (ch === '"') {
+      let j = i + 1;
+      while (j < source.length && source[j] !== '"') {
+        j += 1;
+      }
+      if (j < source.length) {
+        j += 1;
+      }
+      tokens.push({ type: "string", value: source.slice(i, j) });
+      i = j;
+      continue;
+    }
+
+    if (/[A-Za-z_]/.test(ch)) {
+      let j = i + 1;
+      while (j < source.length && /[A-Za-z0-9_]/.test(source[j])) {
+        j += 1;
+      }
+      tokens.push({ type: "word", value: source.slice(i, j) });
+      i = j;
+      continue;
+    }
+
+    if (/[{}\[\]()]/.test(ch)) {
+      tokens.push({ type: "brace", value: ch });
+      i += 1;
+      continue;
+    }
+
+    if (/[=:;,\.]/.test(ch)) {
+      tokens.push({ type: "punct", value: ch });
+      i += 1;
+      continue;
+    }
+
+    tokens.push({ type: "plain", value: ch });
+    i += 1;
+  }
+
+  return tokens;
+};
+
+const colorizeTokens = (source) => {
+  const raw = tokenizeCode(source);
+  const colored = raw.map((token) => ({ ...token, styleType: token.type }));
+
+  for (let i = 0; i < colored.length; i += 1) {
+    const token = colored[i];
+
+    if (token.type !== "word") {
+      continue;
+    }
+
+    if (KEYWORDS.has(token.value)) {
+      token.styleType = "keyword";
+      continue;
+    }
+
+    let next = i + 1;
+    while (next < colored.length && colored[next].type === "ws") {
+      next += 1;
+    }
+
+    if (next < colored.length && colored[next].value === ":") {
+      token.styleType = "key";
+      continue;
+    }
+
+    token.styleType = "identifier";
+  }
+
+  return colored;
+};
+
+const tokenClass = (styleType, isActive) => {
+  if (!isActive) {
+    return "text-nb-muted";
+  }
+
+  switch (styleType) {
+    case "keyword":
+      return "text-[#F4A261]";
+    case "key":
+      return "text-[#7DD3FC]";
+    case "string":
+      return "text-[#A7F3D0]";
+    case "brace":
+      return "text-[#C4B5FD]";
+    case "punct":
+      return "text-[#FCA5A5]";
+    case "identifier":
+      return "text-[#F9FAFB]";
+    default:
+      return "text-nb-text";
+  }
+};
 
 const Hero = () => {
-  const containerRef = useRef();
-  const revealRef = useRef();
-  const titleRef = useRef();
-  const subtextRef = useRef();
-  const scrollRef = useRef();
-  const theme = useTheme();
+  const containerRef = useRef(null);
+  const watermarkTrackRef = useRef(null);
+  
+  // Terminal states
+  const [typedCode, setTypedCode] = useState("");
+  const [cursorVisible, setCursorVisible] = useState(true);
+  const [isCodeHovered, setIsCodeHovered] = useState(false);
 
-  const [isMobile, setIsMobile] = useState(false);
-
+  // 1. Blinking Cursor Timer
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    setIsMobile(mediaQuery.matches);
-
-    const handleMediaQueryChange = (event) => {
-      setIsMobile(event.matches);
-    };
-
-    mediaQuery.addEventListener("change", handleMediaQueryChange);
-    return () => mediaQuery.removeEventListener("change", handleMediaQueryChange);
+    const cursorTimer = window.setInterval(() => {
+      setCursorVisible((prev) => !prev);
+    }, 450);
+    return () => window.clearInterval(cursorTimer);
   }, []);
 
+  // 2. Looping typewriter code block
+  useEffect(() => {
+    let timer;
+    let index = 0;
+    let deleting = false;
+
+    const loopTyping = () => {
+      if (!deleting) {
+        index += 1;
+        setTypedCode(ABOUT_CODE_BLOCK.slice(0, index));
+
+        if (index >= ABOUT_CODE_BLOCK.length) {
+          deleting = true;
+          timer = window.setTimeout(loopTyping, 1700);
+          return;
+        }
+
+        const char = ABOUT_CODE_BLOCK[index - 1] || "";
+        const delay = char === "\n" ? 120 : char === " " ? 14 : 22;
+        timer = window.setTimeout(loopTyping, delay);
+        return;
+      }
+
+      index = Math.max(0, index - 2);
+      setTypedCode(ABOUT_CODE_BLOCK.slice(0, index));
+
+      if (index === 0) {
+        deleting = false;
+        timer = window.setTimeout(loopTyping, 400);
+        return;
+      }
+
+      timer = window.setTimeout(loopTyping, 12);
+    };
+
+    timer = window.setTimeout(loopTyping, 260);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  // 3. Watermark marquee + scroll parallax
+  useEffect(() => {
+    let rafId = 0;
+    let marqueeX = 0;
+    let parallaxY = 0;
+
+    const onScroll = () => {
+      if (!containerRef.current) {
+        return;
+      }
+
+      const rect = containerRef.current.getBoundingClientRect();
+      parallaxY = -rect.top * 0.5;
+    };
+
+    const animate = () => {
+      const track = watermarkTrackRef.current;
+
+      if (track) {
+        const singleBlockWidth = track.scrollWidth / 2;
+        marqueeX -= 0.9;
+
+        if (Math.abs(marqueeX) >= singleBlockWidth) {
+          marqueeX = 0;
+        }
+
+        track.style.transform = `translate3d(${marqueeX}px, ${parallaxY}px, 0)`;
+      }
+
+      rafId = window.requestAnimationFrame(animate);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    rafId = window.requestAnimationFrame(animate);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  // GSAP Animations
   useGSAP(() => {
     const tl = gsap.timeline();
 
-    gsap.set([".hero-text-line", ".hero-sub-line"], { y: "150%", rotateX: 20, opacity: 0 });
-    gsap.set(scrollRef.current, { opacity: 0, y: 50 });
+    gsap.set([".hero-block"], { y: 100, opacity: 0 });
+    gsap.set([".ascii-block"], { x: 50, opacity: 0 });
+    gsap.set(".badge", { scale: 0, rotation: -20 });
 
-    if (revealRef.current) {
-      tl.fromTo(revealRef.current,
-        { clipPath: "circle(0% at 50% 50%)" },
-        { clipPath: "circle(150% at 50% 50%)", duration: 2, ease: "power4.inOut" }
-      );
-    }
-
-    tl.to([".hero-text-line", ".hero-sub-line"], {
-      y: "0%",
-      rotateX: 0,
+    tl.to(".hero-block", {
+      y: 0,
       opacity: 1,
-      duration: 1.5,
-      stagger: 0.2,
-      ease: "back.out(1.7)",
-    }, "-=1.0");
-
-    tl.to(scrollRef.current, {
-      opacity: 1, y: 0, duration: 1, ease: "power3.out",
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "power3.out",
+    })
+    .to(".badge", {
+      scale: 1,
+      rotation: -10,
+      duration: 0.4,
+      ease: "back.out(2)",
+    }, "-=0.3")
+    .to(".ascii-block", {
+      x: 0, 
+      opacity: 1,
+      duration: 0.6,
+      ease: "power2.out",
     }, "-=0.5");
+  }, { scope: containerRef });
 
-    if (!isMobile) {
-      const xToTitle = gsap.quickTo(titleRef.current, "x", { duration: 1, ease: "power3" });
-      const yToTitle = gsap.quickTo(titleRef.current, "y", { duration: 1, ease: "power3" });
-
-      const handleMouseMove = (e) => {
-        if (!titleRef.current) return;
-        const { clientX, clientY, innerWidth, innerHeight } = window;
-        const x = (clientX / innerWidth - 0.5);
-        const y = (clientY / innerHeight - 0.5);
-        xToTitle(x * 20);
-        yToTitle(y * 20);
-      };
-      window.addEventListener("mousemove", handleMouseMove);
-      return () => window.removeEventListener("mousemove", handleMouseMove);
-    }
-
-  }, { scope: containerRef, dependencies: [isMobile] });
-
-  const generateStars = (count) => {
-    return Array.from({ length: count }).map((_, i) => ({
-      id: i,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      animationDelay: `${Math.random() * 5}s`,
-      opacity: Math.random() * 0.7 + 0.3,
-    }));
-  };
-
-  const generateMeteors = (count) => {
-    return Array.from({ length: count }).map((_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      animationDelay: `${Math.random() * 10 + 2}s`,
-      animationDuration: `${Math.random() * 2 + 3}s`,
-    }));
-  };
+  const typedTokens = colorizeTokens(typedCode);
 
   return (
-    <section ref={containerRef} className="relative w-full h-screen mx-auto overflow-hidden bg-primary">
+    <section ref={containerRef} className="relative w-full min-h-screen pt-[120px] pb-10 overflow-hidden flex flex-col justify-center border-b-[3px] border-nb-border-muted z-0">
+      
+      {/* Background marquee watermark */}
+      <div className="absolute inset-0 pointer-events-none flex items-center overflow-hidden opacity-[0.03] mix-blend-overlay selection:bg-transparent">
+        <div ref={watermarkTrackRef} className="flex w-max will-change-transform">
+          <h1 className="text-[40vw] font-black font-space leading-none whitespace-nowrap pr-16 sm:pr-24">CODE CODE CODE CODE</h1>
+          <h1 className="text-[40vw] font-black font-space leading-none whitespace-nowrap pr-16 sm:pr-24" aria-hidden="true">CODE CODE CODE CODE</h1>
+        </div>
+      </div>
 
-      <style>{`
-          /* Text Animations */
-          @keyframes gradient-flow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-          
-          .text-gradient { 
-            background: linear-gradient(90deg, #915EFF 0%, #00d8ff 50%, #915EFF 100%); 
-            background-size: 200% auto; 
-            color: transparent; 
-            -webkit-background-clip: text; 
-            background-clip: text; 
-            animation: gradient-flow 3s linear infinite; 
-            filter: drop-shadow(0 0 15px rgba(145, 94, 255, 0.4));
-          }
+      <div className={`max-w-7xl mx-auto ${styles.paddingX} w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-4 relative z-10 items-center`}>
+         
+         {/* Left Col: Main Typography */}
+         <div className="lg:col-span-7 flex flex-col items-start relative z-20">
+            <div className="badge absolute -top-12 -left-4 sm:-left-8 bg-nb-accent text-[#0D0D0D] font-mono font-bold px-4 py-2 border-[3px] border-nb-border shadow-[4px_4px_0_#FFF] z-30 transform -rotate-12 cursor-default select-none hover:-rotate-6 hover:shadow-[6px_6px_0_#FFF] transition-all">
+              [ AVAILABLE FOR WORK ]
+            </div>
 
-          /* Glitch Logic */
-          .hero-glitch-wrapper { position: relative; display: inline-block; cursor: pointer; }
-          .hero-glitch { position: relative; font-weight: 900; }
-          .hero-glitch::before, .hero-glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #050816; display: none; }
-          .hero-glitch::before { color: #915EFF; left: 2px; text-shadow: -2px 0 #ffffff; clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); }
-          .hero-glitch::after { color: #00ffff; left: -2px; text-shadow: -2px 0 #00ffff; clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); }
-          
-          .hero-glitch-wrapper:hover .hero-glitch::before { display: block; animation: glitch-anim-1 0.4s infinite linear alternate-reverse; }
-          .hero-glitch-wrapper:hover .hero-glitch::after { display: block; animation: glitch-anim-2 0.4s infinite linear alternate-reverse; }
-
-          .mobile-auto-glitch .hero-glitch::before { display: block; animation: glitch-anim-1 3s infinite linear alternate-reverse; }
-          .mobile-auto-glitch .hero-glitch::after { display: block; animation: glitch-anim-2 3s infinite linear alternate-reverse; }
-
-          @keyframes glitch-anim-1 { 
-            0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 2px); }
-            5% { clip-path: inset(80% 0 10% 0); transform: translate(2px, -2px); } 
-            10% { clip-path: inset(10% 0 50% 0); transform: translate(-2px, 0); }
-            15% { clip-path: inset(0 0 0 0); transform: translate(0, 0); display: none; } 
-            100% { clip-path: inset(0 0 0 0); transform: translate(0, 0); display: none; }
-          }
-          @keyframes glitch-anim-2 { 
-            0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -2px); }
-            5% { clip-path: inset(30% 0 20% 0); transform: translate(-2px, 2px); }
-            10% { clip-path: inset(60% 0 10% 0); transform: translate(2px, 0); }
-            15% { clip-path: inset(0 0 0 0); transform: translate(0, 0); display: none; } 
-            100% { clip-path: inset(0 0 0 0); transform: translate(0, 0); display: none; }
-          }
-          
-          @keyframes bounce-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(20px); } }
-          .animate-bounce-slow { animation: bounce-slow 1.5s infinite; }
-
-          /* Moving Gradient Glow Grid */
-          @keyframes grid-glow-move {
-            0% { background-position: 0% 0%; }
-            50% { background-position: 100% 100%; }
-            100% { background-position: 0% 0%; }
-          }
-
-          .mobile-tech-grid {
-            width: 100%; height: 100%;
-            position: absolute; inset: 0;
-            
-            /* Colorful Animated Gradient */
-            background: linear-gradient(135deg, rgba(145, 94, 255, 0.4) 0%, rgba(0, 216, 255, 0.4) 50%, rgba(145, 94, 255, 0.4) 100%);
-            background-size: 200% 200%;
-            animation: grid-glow-move 8s ease infinite; /* Moves the colors */
-
-            /* Mask for Grid Shape */
-            mask-image: 
-              linear-gradient(to right, black 1px, transparent 1px),
-              linear-gradient(to bottom, black 1px, transparent 1px);
-            mask-size: 40px 40px;
-            -webkit-mask-image: 
-              linear-gradient(to right, black 1px, transparent 1px),
-              linear-gradient(to bottom, black 1px, transparent 1px);
-            -webkit-mask-size: 40px 40px;
-          }
-
-          /* Fade Overlay to soften edges */
-          .mobile-grid-fade {
-            position: absolute; inset: 0;
-            background: radial-gradient(circle at center, transparent 30%, ${theme === 'light' ? '#f8fafc' : '#050816'} 90%);
-            pointer-events: none;
-          }
-
-          /* Other Effects */
-          .scanline {
-            width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
-            background-size: 100% 4px;
-            position: absolute; pointer-events: none; z-index: 10; opacity: 0.6;
-          }
-          
-          
-          @keyframes float-blob { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
-          .blob-purple { position: absolute; top: 20%; left: 20%; width: 300px; height: 300px; background: #915EFF; filter: blur(80px); opacity: 0.4; border-radius: 50%; animation: float-blob 10s infinite ease-in-out; }
-          .blob-cyan { position: absolute; bottom: 20%; right: 10%; width: 250px; height: 250px; background: #00d8ff; filter: blur(80px); opacity: 0.3; border-radius: 50%; animation: float-blob 12s infinite ease-in-out reverse; }
-          
-
-          @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
-          .star { position: absolute; background: white; border-radius: 50%; width: 2px; height: 2px; animation: twinkle 4s infinite ease-in-out; }
-          @keyframes meteor { 0% { transform: rotate(215deg) translateX(0); opacity: 1; } 70% { opacity: 1; } 100% { transform: rotate(215deg) translateX(-500px); opacity: 0; } }
-          .meteor { position: absolute; top: -50px; width: 150px; height: 1px; background: linear-gradient(90deg, rgba(255,255,255,1), rgba(255,255,255,0)); transform: rotate(215deg); opacity: 0; filter: drop-shadow(0 0 6px rgba(255,255,255,0.8)); }
-      `}</style>
-
-      <div ref={revealRef} className="w-full h-full relative">
-        <div className={`absolute inset-0 top-[140px] max-w-7xl mx-auto ${styles.paddingX} flex flex-col items-center justify-start pt-20 gap-5 z-20 pointer-events-none text-center`}>
-          <div>
-            <div ref={titleRef} className="relative pointer-events-auto">
-              <h1 className="font-black text-text-primary lg:text-[100px] sm:text-[75px] xs:text-[60px] text-[50px] lg:leading-[110px] mt-2 drop-shadow-2xl">
-                <div className="overflow-hidden">
-                  <div className="hero-text-line">Hi, I'm <br className="sm:hidden" /></div>
-                </div>
-                <div className="overflow-hidden">
-                  <div className="hero-text-line">
-                    <span className={`hero-glitch-wrapper ${isMobile ? 'mobile-auto-glitch' : ''}`}>
-                      <span className="hero-glitch tracking-widest text-gradient" data-text="SWAYAM">SWAYAM</span>
-                    </span>
-                  </div>
-                </div>
+            <div className="overflow-hidden w-full pt-4">
+              <h1 className={`${styles.heroHeadText} hero-block bg-nb-bg text-nb-text inline-block leading-[0.9]`}>
+                HI, I'M
               </h1>
             </div>
 
-            <div ref={subtextRef} className="relative mt-6">
-              <div className="overflow-hidden flex justify-center">
-                <p className="text-secondary font-medium lg:text-[30px] sm:text-[26px] xs:text-[20px] text-[18px] lg:leading-[40px] hero-sub-line drop-shadow-md">
-                  I Design and Develop
-                </p>
-              </div>
-              <div className="overflow-hidden flex justify-center">
-                <p className="text-secondary font-medium lg:text-[30px] sm:text-[26px] xs:text-[20px] text-[18px] lg:leading-[40px] hero-sub-line drop-shadow-md">
-                  Immersive 3D Experiences
-                </p>
-              </div>
+            <div className="overflow-hidden w-full mt-[-5px] md:mt-[-10px] relative z-10 py-4">
+               <h1 className={`text-[#0d0d0d] ${styles.heroHeadText} hero-block bg-nb-accent  inline-block px-4 border-[4px] border-nb-border shadow-[8px_8px_0px_#FFFFFF] transform translate-x-2 md:translate-x-6 leading-[0.9]`}>
+                 SWAYAM
+               </h1>
             </div>
-          </div>
-        </div>
 
-        <div className="absolute inset-0 w-full h-full z-0">
-          {isMobile ? (
-            <div className={`relative w-full h-full overflow-hidden ${theme === 'light' ? 'bg-[#f8fafc]' : 'bg-[#050816]'}`}>
-              <div className="scanline" />
-              <div className="blob-purple" />
-              <div className="blob-cyan" />
-              <div className="blob-purple" />
-              <div className="blob-cyan" />
-
-              {generateMeteors(4).map(meteor => (
-                <div key={meteor.id} className="meteor" style={{ left: meteor.left, animationDelay: meteor.animationDelay, animationDuration: meteor.animationDuration }} />
-              ))}
-
-              <div className="absolute inset-0 mobile-tech-grid" />
-              <div className="absolute inset-0 mobile-grid-fade" />
+            <div className="mt-8 flex flex-col gap-2 relative z-20">
+               <div className="overflow-hidden pl-2">
+                 <p className={`${styles.heroSubText} hero-block bg-nb-surface border-l-[4px] border-nb-accent pl-4 py-1 pr-6 inline-block shadow-[4px_4px_0_#FFF]`}>
+                   Full Stack Developer &
+                 </p>
+               </div>
+               <div className="overflow-hidden ml-6">
+                 <p className={`${styles.heroSubText} hero-block bg-nb-surface border-l-[4px] border-nb-accent-2 pl-4 py-1 pr-6 inline-block shadow-[4px_4px_0_#FFF]`}>
+                   3D Web Enthusiast.
+                 </p>
+               </div>
             </div>
-          ) : (
-            <Suspense fallback={null}>
-              <ComputersCanvas />
-            </Suspense>
-          )}
-        </div>
 
-        <div
-          ref={scrollRef}
-          className='absolute xs:bottom-10 bottom-32 w-full flex justify-center items-center z-30 pointer-events-auto cursor-pointer'
-          onClick={() => {
-            const aboutSection = document.querySelector('#about');
-            if (aboutSection) aboutSection.scrollIntoView({ behavior: 'smooth' });
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={3}
-            stroke="currentColor"
-            className="w-12 h-12 text-secondary opacity-50 hover:text-text-primary transition-colors duration-300 animate-bounce-slow"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-          </svg>
+            <div className="mt-14 flex gap-4 md:gap-6 flex-wrap">
+              <button 
+                onClick={() => document.querySelector('#work')?.scrollIntoView()}
+                className="hero-block nb-button bg-nb-bg border-nb-border-muted !text-nb-text hover:!bg-[#0D0D0D] hover:!text-nb-accent hover:border-nb-accent hover:shadow-[6px_6px_0_var(--nb-accent)] py-4 w-full sm:w-auto"
+              >
+                View Works
+              </button>
+              <button 
+                onClick={() => document.querySelector('#about')?.scrollIntoView()}
+                className="hero-block nb-button bg-nb-bg border-nb-border-muted !text-nb-text hover:!bg-[#0D0D0D] hover:!text-nb-accent hover:border-nb-accent hover:shadow-[6px_6px_0_var(--nb-accent)] py-4 w-full sm:w-auto"
+              >
+                About Me
+              </button>
+            </div>
+         </div>
+
+         {/* Right Col: ASCII ART / CODE BLOCK */}
+         <div className="lg:col-span-5 relative mt-16 lg:mt-0 w-full ascii-block z-10">
+           <div className="bg-nb-surface border-[3px] border-nb-border shadow-[8px_8px_0_#FFF] relative group hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[16px_16px_0_var(--nb-accent)] hover:border-nb-accent transition-all duration-200">
+             
+             {/* Terminal Header */}
+             <div className="border-b-[3px] border-nb-border flex justify-between items-center px-4 py-3 bg-nb-bg group-hover:border-nb-accent transition-colors">
+               <span className="font-mono text-xs font-bold text-nb-muted">swayam@dev: ~/portfolio</span>
+               <div className="flex gap-2">
+                 <div className="w-3 h-3 border-2 border-nb-border bg-nb-accent-2"></div>
+                 <div className="w-3 h-3 border-2 border-nb-border bg-nb-accent"></div>
+                 <div className="w-3 h-3 border-2 border-nb-border bg-nb-accent-3"></div>
+               </div>
+             </div>
+
+             {/* ASCII Content */}
+             <div
+               className="p-4 sm:p-6 overflow-hidden select-none"
+               onMouseEnter={() => setIsCodeHovered(true)}
+               onMouseLeave={() => setIsCodeHovered(false)}
+             >
+                <pre className="font-mono text-[11px] sm:text-[12px] md:text-[13px] leading-[1.35] font-bold transition-colors duration-300 min-h-[300px] m-0 whitespace-pre-wrap">
+                  {typedTokens.map((token, idx) => (
+                    <span key={`${token.styleType}-${idx}`} className={tokenClass(token.styleType, isCodeHovered)}>
+                      {token.value}
+                    </span>
+                  ))}
+                  {cursorVisible && <span className="inline-block w-[7px] h-[1em] ml-1 align-[-2px] bg-nb-accent" />}
+                </pre>
+
+                {/* Real-time Status Footer */}
+                <div className="mt-4 pt-4 border-t-2 border-dashed border-nb-border-muted flex flex-col gap-1">
+                    <p className="font-mono text-[10px] sm:text-xs text-nb-muted">
+                    &gt; profile: dynamically typing on loop
+                    </p>
+                    <p className={`font-mono text-[10px] sm:text-xs ${isCodeHovered ? "text-nb-accent" : "text-nb-muted"}`}>
+                      {`> hover: ${isCodeHovered ? "accent color active" : "muted default"}`}
+                    </p>
+                </div>
+             </div>
+           </div>
+         </div>
+
+      </div>
+
+      {/* Scroll indicator block */}
+      <div className="absolute bottom-6 sm:bottom-12 right-6 sm:right-12 cursor-pointer z-30"
+        onClick={() => {
+            document.querySelector('#about')?.scrollIntoView();
+        }}>
+        <div className="border-[3px] border-nb-border px-4 py-2 font-mono text-xs font-bold hover:bg-nb-accent hover:text-[#0D0D0D] shadow-[4px_4px_0_#fff] hover:shadow-[6px_6px_0_var(--nb-accent)] hover:-translate-y-1 transition-all uppercase">
+          [ Scroll &darr; ]
         </div>
       </div>
-    </section >
+    </section>
   );
 };
 

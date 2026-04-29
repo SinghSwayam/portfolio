@@ -226,7 +226,7 @@ const About = () => {
 
           <div className="slide-content-desktop absolute top-0 left-0 w-full h-full flex flex-col justify-center pl-8">
             <div className="nb-card p-10 max-w-xl">
-              <h3 className="font-space font-black text-nb-text text-[40px] uppercase tracking-tighter mb-6 bg-nb-accent text-[#080808] w-fit px-4 border-[3px] border-nb-border shadow-[4px_4px_0_#FFF]">HELLO!</h3>
+              <h3 className="font-space font-black text-[40px] uppercase tracking-tighter mb-6 bg-nb-accent text-[#080808] w-fit px-4 border-[3px] border-nb-border shadow-[4px_4px_0_#FFF]">HELLO!</h3>
               <p className="font-space text-nb-text text-[18px] leading-[1.8] font-medium">
                 I'm a skilled software developer with a passion for building robust website
                 infrastructure. With deep expertise in <span className="bg-nb-accent text-[#0D0D0D] px-1 font-bold">TypeScript</span>, <span className="bg-nb-accent text-[#0D0D0D] px-1 font-bold">React</span>,

@@ -36,9 +36,8 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`w-full flex items-center py-5 fixed top-0 z-50 transition-colors duration-200 ${
-        scrolled ? "bg-nb-bg border-b-[3px] border-nb-border-muted" : "bg-transparent border-b-[3px] border-transparent"
-      }`}
+      className={`w-full flex items-center py-5 fixed top-0 z-50 transition-colors duration-200 ${scrolled ? "bg-nb-bg border-b-[3px] border-nb-border-muted" : "bg-transparent border-b-[3px] border-transparent"
+        }`}
     >
       <div className="w-full flex justify-between items-center max-w-7xl mx-auto px-6 sm:px-16">
         <Link
@@ -50,7 +49,7 @@ const Navbar = () => {
           }}
         >
           {/* Boxed brand mark */}
-          <div className="border-[3px] border-nb-border px-3 py-1 text-nb-text font-black font-space  uppercase text-2xl group-hover:bg-nb-accent group-hover:text-[#0D0D0D] group-hover:border-nb-accent transition-colors duration-0">
+          <div className="border-[3px] border-nb-border px-3 py-1 text-nb-text font-black font-space  uppercase text-2xl group-hover:bg-nb-accent group-hover:text-[#0D0D0D] group-hover:border-nb-accent transition-colors duration-150 ease-out">
             [ SWAYAM ]
           </div>
         </Link>
@@ -60,11 +59,10 @@ const Navbar = () => {
           {navLinks.map((nav) => (
             <li
               key={nav.id}
-              className={`font-mono text-[14px] font-bold uppercase transition-all duration-0 border-[3px] border-transparent shadow-[4px_4px_0px_transparent] ${
-                active === nav.title 
-                ? "bg-nb-accent text-[#0D0D0D] border-nb-accent shadow-[4px_4px_0px_#FFFFFF]" 
-                : "text-nb-text hover:bg-nb-accent hover:text-[#0D0D0D] hover:border-nb-accent hover:shadow-[4px_4px_0px_#FFFFFF] hover:-translate-x-1 hover:-translate-y-1"
-              }`}
+              className={`font-mono text-[14px] font-bold uppercase border-[3px] border-transparent shadow-[4px_4px_0px_transparent] transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${active === nav.title
+                  ? "bg-nb-accent text-[#0D0D0D] border-nb-accent shadow-[4px_4px_0px_#FFFFFF]"
+                  : "text-nb-text hover:bg-nb-accent hover:text-[#0D0D0D] hover:border-nb-accent hover:shadow-[4px_4px_0px_#FFFFFF] hover:-translate-x-1 hover:-translate-y-1"
+                }`}
             >
               <a href={`#${nav.id}`} className="block px-4 py-2" onClick={(e) => handleNavClick(e, nav)}>{nav.title}</a>
             </li>
@@ -81,19 +79,17 @@ const Navbar = () => {
           </div>
 
           <div
-            className={`${
-              !toggle ? "hidden" : "flex"
-            } p-6 absolute top-full right-0 left-0 min-w-full z-10 bg-nb-bg border-b-[3px] border-nb-border-muted flex-col`}
+            className={`${!toggle ? "hidden" : "flex"
+              } p-6 absolute top-full right-0 left-0 min-w-full z-10 bg-nb-bg border-b-[3px] border-nb-border-muted flex-col`}
           >
             <ul className="list-none flex justify-center items-start flex-col gap-4 w-full">
               {navLinks.map((nav) => (
                 <li
                   key={nav.id}
-                  className={`w-full font-mono text-[16px] font-bold uppercase border-[3px] p-4 transition-colors ${
-                    active === nav.title 
-                    ? "bg-nb-accent text-[#0D0D0D] border-nb-accent" 
-                    : "text-nb-text border-nb-border-muted active:bg-nb-accent active:text-[#0D0D0D]"
-                  }`}
+                  className={`w-full font-mono text-[16px] font-bold uppercase border-[3px] p-4 transition-colors ${active === nav.title
+                      ? "bg-nb-accent text-[#0D0D0D] border-nb-accent"
+                      : "text-nb-text border-nb-border-muted active:bg-nb-accent active:text-[#0D0D0D]"
+                    }`}
                   onClick={(e) => handleNavClick(e, nav)}
                 >
                   <a href={`#${nav.id}`} className="block w-full">{nav.title}</a>

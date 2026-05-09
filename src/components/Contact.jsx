@@ -118,11 +118,14 @@ const Contact = () => {
             </p>
             
             <div className="mt-10 flex gap-4">
-              <a href="https://linkedin.com/in/swayamsingh" target="_blank" rel="noreferrer" className="w-14 h-14 border-[3px] border-[#0D0D0D] bg-[#0D0D0D] flex justify-center items-center hover:bg-white hover:shadow-[6px_6px_0_#0D0D0D] hover:-translate-y-1 transition-all group">
-                <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn" className="w-6 h-6 filter saturate-0 contrast-200 brightness-200 group-hover:brightness-0 group-hover:invert-0" />
+              <a href="https://www.linkedin.com/in/singhswayam/" target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn" className="w-12 h-12 sm:w-14 sm:h-14 border-[3px] border-[#0D0D0D] bg-[#F7F1E3] flex justify-center items-center shadow-[6px_6px_0_#0D0D0D] hover:-translate-y-1 hover:shadow-[10px_10px_0_#0D0D0D] transition-all group">
+                <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn" className="w-5 h-5 sm:w-6 sm:h-6" />
               </a>
-              <a href="mailto:swayam.singh.contact@gmail.com" className="w-14 h-14 border-[3px] border-[#0D0D0D] bg-[#0D0D0D] flex justify-center items-center hover:bg-white hover:shadow-[6px_6px_0_#0D0D0D] hover:-translate-y-1 transition-all group">
-                <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" alt="Email" className="w-6 h-6 filter saturate-0 contrast-200 brightness-200 group-hover:brightness-50 group-hover:invert-0" />
+              <a href="mailto:swayamsingh.dev@gmail.com" aria-label="Email" title="Email" className="w-12 h-12 sm:w-14 sm:h-14 border-[3px] border-[#0D0D0D] bg-[#F7F1E3] flex justify-center items-center shadow-[6px_6px_0_#0D0D0D] hover:-translate-y-1 hover:shadow-[10px_10px_0_#0D0D0D] transition-all group">
+                <img src="https://cdn-icons-png.flaticon.com/512/5968/5968534.png" alt="Email" className="w-5 h-5 sm:w-6 sm:h-6" />
+              </a>
+              <a href="https://github.com/singhswayam" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub" className="w-12 h-12 sm:w-14 sm:h-14 border-[3px] border-[#0D0D0D] bg-[#F7F1E3] flex justify-center items-center shadow-[6px_6px_0_#0D0D0D] hover:-translate-y-1 hover:shadow-[10px_10px_0_#0D0D0D] transition-all group">
+                <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="Github" className="w-5 h-5 sm:w-6 sm:h-6" />
               </a>
             </div>
         </div>

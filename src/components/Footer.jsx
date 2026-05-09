@@ -74,10 +74,10 @@ const Footer = () => {
         <div className="flex flex-col items-start lg:items-end justify-start gap-4">
           <p className="font-mono text-[11px] text-nb-muted uppercase font-bold tracking-widest">[ QUICK LINKS ]</p>
           <div className="flex flex-wrap lg:flex-col gap-3 lg:items-end">
-            <a href="#about" className="font-mono font-bold text-[12px] bg-nb-surface border-[3px] border-nb-border px-4 py-2 shadow-[4px_4px_0_#FFF] hover:bg-nb-accent hover:text-[#0D0D0D] hover:-translate-y-1 hover:shadow-[6px_6px_0_#FFF] transition-all">[ ABOUT ]</a>
-            <a href="#tech" className="font-mono font-bold text-[12px] bg-nb-surface border-[3px] border-nb-border px-4 py-2 shadow-[4px_4px_0_#FFF] hover:bg-nb-accent hover:text-[#0D0D0D] hover:-translate-y-1 hover:shadow-[6px_6px_0_#FFF] transition-all">[ SKILLS ]</a>
-            <a href="#work" className="font-mono font-bold text-[12px] bg-nb-surface border-[3px] border-nb-border px-4 py-2 shadow-[4px_4px_0_#FFF] hover:bg-nb-accent hover:text-[#0D0D0D] hover:-translate-y-1 hover:shadow-[6px_6px_0_#FFF] transition-all">[ PROJECTS ]</a>
-            <a href="#contact" className="font-mono font-bold text-[12px] bg-nb-surface border-[3px] border-nb-border px-4 py-2 shadow-[4px_4px_0_#FFF] hover:bg-nb-accent hover:text-[#0D0D0D] hover:-translate-y-1 hover:shadow-[6px_6px_0_#FFF] transition-all">[ CONTACT ]</a>
+            <a href="#about" className="w-full font-mono font-bold text-[12px] bg-nb-surface border-[3px] border-nb-border px-4 py-2 shadow-[4px_4px_0_#FFF] hover:bg-nb-accent hover:text-[#0D0D0D] hover:-translate-y-1 hover:shadow-[6px_6px_0_#FFF] transition-all">[ ABOUT ]</a>
+            <a href="#tech" className="w-full font-mono font-bold text-[12px] bg-nb-surface border-[3px] border-nb-border px-4 py-2 shadow-[4px_4px_0_#FFF] hover:bg-nb-accent hover:text-[#0D0D0D] hover:-translate-y-1 hover:shadow-[6px_6px_0_#FFF] transition-all">[ SKILLS ]</a>
+            <a href="#work" className="w-full font-mono font-bold text-[12px] bg-nb-surface border-[3px] border-nb-border px-4 py-2 shadow-[4px_4px_0_#FFF] hover:bg-nb-accent hover:text-[#0D0D0D] hover:-translate-y-1 hover:shadow-[6px_6px_0_#FFF] transition-all">[ PROJECTS ]</a>
+            <a href="#contact" className="w-full font-mono font-bold text-[12px] bg-nb-surface border-[3px] border-nb-border px-4 py-2 shadow-[4px_4px_0_#FFF] hover:bg-nb-accent hover:text-[#0D0D0D] hover:-translate-y-1 hover:shadow-[6px_6px_0_#FFF] transition-all">[ CONTACT ]</a>
           </div>
         </div>
       </div>

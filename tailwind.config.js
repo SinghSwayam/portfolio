@@ -1,7 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{js,jsx}"],
-  darkMode: ['class', '[data-theme="dark"]'],
 
   safelist: [
     {
@@ -27,27 +26,24 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        space: ["Space Grotesk", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        outfit: ["Outfit", "sans-serif"],
       },
       colors: {
-        "nb-bg": "var(--nb-bg)",
-        "nb-surface": "var(--nb-surface)",
-        "nb-surface-2": "var(--nb-surface-2)",
-        "nb-border": "var(--nb-border)",
-        "nb-border-muted": "var(--nb-border-muted)",
-        "nb-accent": "var(--nb-accent)",
-        "nb-accent-2": "var(--nb-accent-2)",
-        "nb-accent-3": "var(--nb-accent-3)",
-        "nb-text": "var(--nb-text)",
-        "nb-muted": "var(--nb-muted)",
+        "bh-bg":     "var(--bh-bg)",
+        "bh-fg":     "var(--bh-fg)",
+        "bh-red":    "var(--bh-red)",
+        "bh-blue":   "var(--bh-blue)",
+        "bh-yellow": "var(--bh-yellow)",
+        "bh-muted":  "var(--bh-muted)",
+        "bh-border": "var(--bh-border)",
 
-        primary: "var(--nb-bg)",
-        secondary: "var(--nb-muted)",
-        tertiary: "var(--nb-surface)",
+        // Keep alias names so any stray Tailwind refs don't crash
+        primary:   "var(--bh-bg)",
+        secondary: "var(--bh-muted)",
+        tertiary:  "var(--bh-muted)",
 
-        "text-primary": "var(--nb-text)",
-        "text-secondary": "var(--nb-muted)",
+        "text-primary":   "var(--bh-fg)",
+        "text-secondary": "var(--bh-fg)",
       },
     },
   },

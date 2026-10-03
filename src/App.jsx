@@ -12,11 +12,15 @@ import GitHubActivity from "./components/GitHubActivity";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useScroll, motion, useTransform } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const App = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const { scrollYProgress } = useScroll();
+
+  
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)");
@@ -31,10 +35,10 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    // Adjusted Lenis settings for a more snappy scroll (neubrutalism feel)
+    // Bauhaus: crisp, mechanical scroll — no floaty easing
     const lenis = new Lenis({
-      duration: 0.8,
-      easing: (t) => 1 - Math.pow(1 - t, 4), // Quicker out ease, less floaty
+      duration: 0.7,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
       direction: 'vertical',
       gestureDirection: 'vertical',
       smooth: true,
@@ -60,7 +64,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <div className="relative z-0 bg-nb-bg bg-dot-pattern overflow-x-hidden duration-0 min-h-screen">
+      <div className="relative z-0 bg-bh-bg overflow-x-hidden duration-0 min-h-screen">
         <div className="relative z-[120]">
           <Navbar />
         </div>
@@ -71,16 +75,23 @@ const App = () => {
         <Tech />
         <Works />
 
-        <div className="hidden lg:block border-t-[3px] border-nb-border-muted relative z-10 bg-nb-bg bg-dot-interactive">
+        <div className="hidden lg:block border-t-[4px] border-bh-border relative z-10 bg-bh-bg bh-dot-pattern-dark">
           <GitHubActivity />
         </div>
 
-        <div className="relative z-20 border-t-[3px] border-nb-border-muted bg-nb-accent">
+        <div className="relative z-20 border-t-[4px] border-bh-border bg-bh-yellow">
           <Contact />
         </div>
 
         <Footer />
       </div>
+
+      <motion.div
+        className={`fixed top-0 left-0 right-0 h-2 bg-black/50 border-white border-2 z-[9999] origin-left`}
+        style={{
+          scaleX: scrollYProgress,
+        }}
+      />
     </BrowserRouter>
   );
 }

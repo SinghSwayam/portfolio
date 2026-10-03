@@ -1,144 +1,235 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Space+Grotesk:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   BAUHAUS DESIGN SYSTEM — TOKEN LAYER
+   ============================================ */
 :root {
-  --nb-bg: #0D0D0D;
-  --nb-surface: #161616;
-  --nb-surface-2: #1E1E1E;
-  --nb-border: #FFFFFF;
-  --nb-border-muted: #2A2A2A;
-  --nb-accent: #F5FF30;
-  --nb-accent-2: #FF3F3F;
-  --nb-accent-3: #3BFFB3;
-  --nb-text: #FFFFFF;
-  --nb-muted: #888888;
+  --bh-bg: #F0F0F0;
+  --bh-fg: #121212;
+  --bh-red: #D02020;
+  --bh-blue: #1040C0;
+  --bh-yellow: #F0C020;
+  --bh-muted: #E0E0E0;
+  --bh-border: #121212;
 }
 
+/* ============================================
+   RESET & BASE
+   ============================================ */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Outfit", sans-serif;
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: var(--nb-bg);
-  color: var(--nb-text);
+  background-color: var(--bh-bg);
+  color: var(--bh-fg);
   overflow-x: hidden;
   width: 100%;
 }
 
-.font-mono {
-  font-family: "JetBrains Mono", monospace;
-}
-
-/* Base Styles */
 h1, h2, h3, h4, h5, h6 {
-  color: var(--nb-text);
+  color: var(--bh-fg);
   font-weight: 900;
   letter-spacing: -0.04em;
+  text-transform: uppercase;
+  line-height: 0.95;
 }
 
 p {
-  color: var(--nb-muted);
   line-height: 1.6;
+  color: var(--bh-fg);
 }
 
-/* Neubrutalism Utilities */
-.nb-card {
-  background-color: var(--nb-surface);
-  border: 3px solid var(--nb-border);
-  box-shadow: 6px 6px 0px var(--nb-border);
-  transition: transform 0.15s steps(3), box-shadow 0.15s steps(3), border-color 0.15s steps(3);
+/* ============================================
+   BAUHAUS UTILITY CLASSES
+   ============================================ */
+
+/* Cards */
+.bh-card {
+  background-color: #FFFFFF;
+  border: 4px solid var(--bh-border);
+  box-shadow: 8px 8px 0px 0px #121212;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
 }
 
-.nb-card-hover:hover {
-  transform: translate(-4px, -4px);
-  box-shadow: 10px 10px 0px var(--nb-accent);
-  border-color: var(--nb-accent);
+.bh-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 8px 12px 0px 0px #121212;
 }
 
-.nb-card-active:active {
-  transform: translate(6px, 6px);
-  box-shadow: 0px 0px 0px var(--nb-border);
-}
-
-.nb-button {
-  background-color: transparent;
-  color: var(--nb-text);
-  border: 3px solid var(--nb-border);
-  box-shadow: 6px 6px 0px var(--nb-border);
-  font-weight: 900;
+/* Buttons */
+.bh-btn {
+  border: 2px solid var(--bh-border);
+  font-weight: 700;
   text-transform: uppercase;
-  padding: 0.75rem 2rem;
+  letter-spacing: 0.1em;
+  padding: 0.75rem 1.75rem;
   cursor: pointer;
-  transition: all 0.15s steps(4);
+  font-family: "Outfit", sans-serif;
+  font-size: 0.875rem;
+  transition: opacity 0.2s ease-out, transform 0.1s ease-out, box-shadow 0.1s ease-out;
+  display: inline-block;
 }
 
-.nb-button:hover {
-  background-color: var(--nb-accent);
-  color: #0D0D0D;
-  box-shadow: 8px 8px 0px var(--nb-border);
-  transform: translate(-2px, -2px);
+.bh-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none !important;
 }
 
-.nb-button:active {
-  transform: translate(6px, 6px);
-  box-shadow: 0px 0px 0px var(--nb-border);
+.bh-btn-red {
+  background-color: var(--bh-red);
+  color: #FFFFFF;
+  box-shadow: 4px 4px 0px 0px #121212;
+}
+.bh-btn-red:hover { opacity: 0.9; }
+
+.bh-btn-blue {
+  background-color: var(--bh-blue);
+  color: #FFFFFF;
+  box-shadow: 4px 4px 0px 0px #121212;
+}
+.bh-btn-blue:hover { opacity: 0.9; }
+
+.bh-btn-yellow {
+  background-color: var(--bh-yellow);
+  color: var(--bh-fg);
+  box-shadow: 4px 4px 0px 0px #121212;
+}
+.bh-btn-yellow:hover { opacity: 0.9; }
+
+.bh-btn-outline {
+  background-color: #FFFFFF;
+  color: var(--bh-fg);
+  box-shadow: 4px 4px 0px 0px #121212;
+}
+.bh-btn-outline:hover { opacity: 0.9; }
+
+/* Inputs */
+.bh-input {
+  background-color: #FFFFFF;
+  border: 4px solid var(--bh-border);
+  padding: 0.75rem 1rem;
+  color: var(--bh-fg);
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  outline: none;
+  width: 100%;
+  transition: box-shadow 0.2s ease-out;
+  box-shadow: none;
 }
 
-/* Scrollbar */
-@media (min-width: 640px) {
-  ::-webkit-scrollbar {
-    width: 12px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: var(--nb-bg);
-    border-left: 2px solid var(--nb-border-muted);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: var(--nb-surface);
-    border: 2px solid var(--nb-border);
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--nb-accent);
-  }
+.bh-input:focus {
+  box-shadow: 4px 4px 0px 0px var(--bh-blue);
 }
 
-/* Background Texture */
+.bh-input::placeholder {
+  color: #888;
+  font-weight: 500;
+}
+
+/* Section dividers */
+.bh-section-border {
+  border-bottom: 4px solid var(--bh-border);
+}
+
+/* Dot grid pattern */
+.bh-dot-pattern {
+  background-image: radial-gradient(#fff 2px, transparent 2px);
+  background-size: 20px 20px;
+}
+
+.bh-dot-pattern-dark {
+  background-image: radial-gradient(#12121222 2px, transparent 2px);
+  background-size: 24px 24px;
+}
+
+/* bg-dot-pattern alias for App.jsx */
 .bg-dot-pattern {
-  background-image: radial-gradient(var(--nb-border-muted) 1px, transparent 1px);
+  background-image: radial-gradient(#12121222 2px, transparent 2px);
   background-size: 24px 24px;
 }
 
 .bg-dot-interactive {
-  background-image: radial-gradient(var(--nb-border-muted) 1px, transparent 1px);
+  background-image: radial-gradient(#12121222 2px, transparent 2px);
   background-size: 24px 24px;
   background-position: 0 0;
 }
 
-/* Helper for fixing negative margins in standard components */
+/* Hash span anchor fix */
 .hash-span {
   margin-top: -100px;
   padding-bottom: 100px;
   display: block;
 }
 
+/* Scrollbar — Bauhaus minimal */
+@media (min-width: 640px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bh-bg);
+    border-left: 2px solid var(--bh-border);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--bh-fg);
+    border: 2px solid var(--bh-bg);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--bh-red);
+  }
+}
+
 /* React Player override */
 .react-player video {
   object-fit: cover !important;
-  width: 100% !important;
   height: 100% !important;
 }
 
-/* Video/Image block neubrutalism */
-.nb-media {
-  border: 3px solid var(--nb-border);
+/* ============================================
+   GEOMETRIC DECORATIONS
+   ============================================ */
+.bh-triangle {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes footer-marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.bh-cursor {
+  animation: blink 0.9s step-end infinite;
+}
+
+/* GitHub Calendar — Bauhaus override */
+.react-activity-calendar text {
+  fill: var(--bh-fg) !important;
+  font-family: "Outfit", sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  text-transform: uppercase;
+}
+
+/* Video/Image block */
+.bh-media {
+  border: 4px solid var(--bh-border);
 }
